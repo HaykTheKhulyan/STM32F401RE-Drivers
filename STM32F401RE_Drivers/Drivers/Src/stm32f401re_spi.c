@@ -7,6 +7,14 @@
 
 #include "stm32f401re_spi.h"
 
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *SPIx_ptr, uint32_t flag)
+{
+	if (SPIx_ptr->SR & flag) {
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
 // peripheral clock setup
 
 /*******************************************************************************
@@ -48,8 +56,7 @@ void SPI_PCLK_Control(SPI_RegDef_t *SPIx_ptr,
  *
  * @brief		- Enable or disable the peripheral clock for the given GPIO port
  *
- * @param		- base address of GPIO port
- * @param 		- ENABLE or DISABLE macro
+ * @param		- pointer to SPI Handle struct
  *
  * @return		- none
  *
@@ -109,12 +116,11 @@ void SPI_Init(SPI_Handle_t *SPI_Handle_ptr)
 }
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPI Deinitialize
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- De-init the SPI peripheral through the RCC register
  *
- * @param		- base address of GPIO port
- * @param 		- ENABLE or DISABLE macro
+ * @param		- base address of SPI device
  *
  * @return		- none
  *
@@ -123,29 +129,90 @@ void SPI_Init(SPI_Handle_t *SPI_Handle_ptr)
  ******************************************************************************/
 void SPI_DeInit(SPI_RegDef_t *SPIx_ptr)
 {
-
+	if (SPIx_ptr == SPI1) {
+		RCC->APB2RSTR |=  (1 << 12);
+		RCC->APB2RSTR &= ~(1 << 12);
+	}
+	else if (SPIx_ptr == SPI2) {
+		RCC->APB1RSTR |=  (1 << 14);
+		RCC->APB2RSTR &= ~(1 << 14);
+	}
+	if (SPIx_ptr == SPI3) {
+		RCC->APB1RSTR |=  (1 << 15);
+		RCC->APB1RSTR &= ~(1 << 15);
+	}
+	if (SPIx_ptr == SPI4) {
+		RCC->APB2RSTR |=  (1 << 13);
+		RCC->APB2RSTR &= ~(1 << 13);
+	}
 }
 
 // data send and receive
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPI Send Data
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Send data along the SPI peripheral
  *
- * @param		- base address of GPIO port
- * @param 		- ENABLE or DISABLE macro
+ * @param		- base address of SPI peripheral
+ * @param 		- pointer to data to send
+ * @param		- length of data to send (in bytes)
  *
  * @return		- none
  *
- * @note		- none
+ * @note		- This is a blocking call
  *
  ******************************************************************************/
 void SPI_SendData(SPI_RegDef_t *SPIx_ptr,
 				  uint8_t *TxBuffer_ptr,
 				  uint32_t len)
 {
+	// if length is greater than zero, we still have data to send
+	while (len > 0)
+	{
+		// wait until the transmit buffer is empty
+		uint8_t Tx_buffer_empty = SPI_GetFlagStatus(SPIx_ptr, SPI_TXE_FLAG);
 
+		if (Tx_buffer_empty)
+		{
+			// check data frame format
+			uint8_t DFF = (SPIx_ptr->CR1 & (1 << SPI_CR1_DFF));
+
+			if (DFF == SPI_DFF_8BITS)
+			{
+				// read 1 byte of data from data to send
+				uint8_t data_to_send = (*TxBuffer_ptr);
+
+				// load the data into the SPI data register
+				SPIx_ptr->DR = data_to_send;
+
+				// increment TxBuffer_ptr so we can read the
+				// following byte of data
+				TxBuffer_ptr++;
+				// decrement length (since there's one less byte of
+				// data to send)
+				len--;
+			}
+			else if (DFF == SPI_DFF_16BITS)
+			{
+				// read 2 bytes of data from data to send
+				// cast TxBuffer_ptr to a 16 bit pointer, then dereference it
+				uint16_t data_to_send = *((uint16_t*)TxBuffer_ptr);
+
+				// load the data into the SPI data register
+				SPIx_ptr->DR = data_to_send;
+
+				// increment TxBuffer_ptr twice (since we
+				// sent two bytes of data)
+				TxBuffer_ptr++;
+				TxBuffer_ptr++;
+				// decrement length twice (since there's two less bytes of
+				// data to send
+				len--;
+				len--;
+			}
+		}
+	}
 }
 
 /*******************************************************************************
@@ -153,7 +220,7 @@ void SPI_SendData(SPI_RegDef_t *SPIx_ptr,
  *
  * @brief		- Enable or disable the peripheral clock for the given GPIO port
  *
- * @param		- base address of GPIO port
+ * @param		- base address of SPI device
  * @param 		- ENABLE or DISABLE macro
  *
  * @return		- none
