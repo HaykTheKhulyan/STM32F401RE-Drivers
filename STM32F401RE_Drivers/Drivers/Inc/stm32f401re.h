@@ -256,7 +256,8 @@ typedef struct {
 } SYSCFG_RegDef_t;
 
 typedef struct {
-	volatile uint32_t CR[2];
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
 	volatile uint32_t SR;
 	volatile uint32_t DR;
 	volatile uint32_t CRCPR;
@@ -290,6 +291,66 @@ typedef struct {
 #define SPI2   ((SPI_RegDef_t*) SPI2_BASE_ADDR)
 #define SPI3   ((SPI_RegDef_t*) SPI3_BASE_ADDR)
 #define SPI4   ((SPI_RegDef_t*) SPI4_BASE_ADDR)
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ *						   SPI Register Bit Position Definitions
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+// SPI Control Register 1
+#define SPI_CR1_CPHA		0
+#define SPI_CR1_CPOL 		1
+#define SPI_CR1_MSTR 		2
+#define SPI_CR1_BR 			3
+#define SPI_CR1_SPE 		6
+#define SPI_CR1_LSBFIRST	7
+#define SPI_CR1_SSI 		8
+#define SPI_CR1_SSM 		9
+#define SPI_CR1_RXONLY 		10
+#define SPI_CR1_DFF 		11
+#define SPI_CR1_CRCNEXT 	12
+#define SPI_CR1_CRCEN 		13
+#define SPI_CR1_BIDIOE 		14
+#define SPI_CR1_BIDIMODE 	15
+
+// SPI Control Register 2
+#define SPI_CR2_RXDMAEN	0
+#define SPI_CR2_TXDMAEN	1
+#define SPI_CR2_SSOE	2
+#define SPI_CR2_FRF		4
+#define SPI_CR2_ERRIE	5
+#define SPI_CR2_RXNEIE	6
+#define SPI_CR2_TXEIE   7
+
+// SPI Status Register
+#define SPI_SR_RXNE		0
+#define SPI_SR_TXE		1
+#define SPI_SR_CHSIDE	2
+#define SPI_SR_UDR		3
+#define SPI_SR_CRCERR	4
+#define SPI_SR_MODF 	5
+#define SPI_SR_OVR  	6
+#define SPI_SR_BSY  	7
+#define SPI_SR_FRE  	8
+
+// SPI Data Register
+#define SPI_DR	0
+
+// SPI I2S Configuration Register
+#define SPI_I2SCFGR_CHLEN	0
+#define SPI_I2SCFGR_DATLEN	1
+#define SPI_I2SCFGR_CKPOL	3
+#define SPI_I2SCFGR_I2SSTD	4
+#define SPI_I2SCFGR_PCMSYNC	7
+#define SPI_I2SCFGR_I2SCFG	8
+#define SPI_I2SCFGR_I2SE	10
+#define SPI_I2SCFGR_I2SMOD	11
+
+// SPI I2S Prescaler Register
+#define SPI_I2SSPR_I2SDIV	0
+#define SPI_I2SSPR_ODD		8
+#define SPI_I2SSPR_MCKOE	9
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -372,6 +433,7 @@ typedef struct {
 #define IRQ_NO_EXTI15_10	40
 
 #include "stm32f401re_gpio.h"
+#include "stm32f401re_spi.h"
 
 #endif /* INC_STM32F401RE_H_ */
 
