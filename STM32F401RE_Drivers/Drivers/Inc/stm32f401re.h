@@ -270,6 +270,24 @@ typedef struct {
 
 } SPI_RegDef_t;
 
+typedef struct {
+	volatile uint32_t SR;
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t SMPR1;
+	volatile uint32_t SMPR2;
+	volatile uint32_t JOFR[4];
+	volatile uint32_t HTR;
+	volatile uint32_t LTR;
+	volatile uint32_t SQR1[3];
+	volatile uint32_t JSQR;
+	volatile uint32_t JDR[4];
+	volatile uint32_t DR;
+	uint32_t RES[149];
+	volatile uint32_t CCR;
+
+} ADC_RegDef_t;
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *						           Peripheral Definitions
@@ -293,6 +311,8 @@ typedef struct {
 #define SPI2   ((SPI_RegDef_t*) SPI2_BASE_ADDR)
 #define SPI3   ((SPI_RegDef_t*) SPI3_BASE_ADDR)
 #define SPI4   ((SPI_RegDef_t*) SPI4_BASE_ADDR)
+
+#define ADC1   ((ADC_RegDef_t*) ADC1_BASE_ADDR))
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -387,6 +407,9 @@ typedef struct {
 // SYSCFG peripheral clock enables
 #define SYSCFG_PCLK_EN() (RCC->APB2ENR |= (1 << 14))
 
+// ADC peripheral clock enables
+#define ADC_PCLK_EN()	 (RCC->APB2ENR |= (1 << 8))
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *						Clock Disable Macros for Peripherals
@@ -420,6 +443,9 @@ typedef struct {
 // SYSCFG peripheral clock disables
 #define SYSCFG_PCLK_DI() (RCC->APB2ENR &= ~(1 << 14))
 
+// ADC peripheral clock disables
+#define ADC_PCLK_DI()	 (RCC->APB2ENR &= ~(1 << 8))
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *						           IRQ Numbers
@@ -436,6 +462,7 @@ typedef struct {
 
 #include "stm32f401re_gpio.h"
 #include "stm32f401re_spi.h"
+#include "stm32f401re_adc.h"
 
 #endif /* INC_STM32F401RE_H_ */
 
