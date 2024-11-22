@@ -49,8 +49,8 @@
 #define SPI_CPHA_HIGH					1
 
 // SPI_SoftwareSlaveManagement
-#define SPI_SSM_EN						0
-#define SPI_SSM_DI						1
+#define SPI_SSM_EN						1
+#define SPI_SSM_DI						0
 
 // SPI status flag definitions
 #define SPI_RXNE_FLAG 	(1 << SPI_SR_RXNE)
@@ -120,7 +120,8 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber,
 void SPI_IRQHandling(SPI_Handle_t *SPI_Handle_ptr);
 
 // other peripheral control functions
-
+void SPI_PeripheralControl(SPI_RegDef_t *SPIx_ptr, uint8_t en);
+void SPI_SSIConfig(SPI_RegDef_t *SPIx_ptr, uint8_t en);
 
 #endif /* INC_STM32F401RE_SPI_H_ */
 

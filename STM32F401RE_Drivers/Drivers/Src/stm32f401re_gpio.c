@@ -61,14 +61,6 @@ void GPIO_PCLK_Control(GPIO_RegDef_t *GPIOx_ptr,
  ******************************************************************************/
 void GPIO_Init(GPIO_Handle_t *GPIO_Handle_ptr)
 {
-	//  GPIO_PinConfig
-	//	uint8_t GPIO_PinNumber;
-	//	uint8_t GPIO_PinMode;
-	//	uint8_t GPIO_PinOutputType;
-	//	uint8_t GPIO_PinSpeed;
-	//	uint8_t GPIO_PinPUPDRControl;
-	//	uint8_t GPIO_PinAlternateFunctionMode;
-
 	GPIO_PCLK_Control(GPIO_Handle_ptr->GPIOx_ptr, 1);
 
 	uint32_t temp = 0;

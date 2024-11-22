@@ -65,15 +65,8 @@ void SPI_PCLK_Control(SPI_RegDef_t *SPIx_ptr,
  ******************************************************************************/
 void SPI_Init(SPI_Handle_t *SPI_Handle_ptr)
 {
-	/*
-	uint8_t SPI_DeviceMode;
-	uint8_t SPI_BusConfig;
-	uint8_t SPI_SClkSpeed;
-	uint8_t SPI_DataFrameFormat;
-	uint8_t SPI_ClockPolarity;
-	uint8_t SPI_ClockPhase;
-	uint8_t SPI_SoftwareSlaveManagement;
-	 */
+	// enable peripheral clock for the chosen SPI device
+	SPI_PCLK_Control(SPI_Handle_ptr->SPIx_ptr, 1);
 
 	// temporary register where we will set the appropriate config bits
 	// will later be copied into the SPI config register
@@ -112,7 +105,13 @@ void SPI_Init(SPI_Handle_t *SPI_Handle_ptr)
 	// SPI_ClockPhase config
 	temp_reg |= (SPI_Handle_ptr->SPI_Config.SPI_ClockPhase << 0);
 
-	SPI_Handle_ptr->SPIx_ptr->CR1 = temp_reg;
+	// SPI_SoftwareSlaveManagement config
+	temp_reg |= (SPI_Handle_ptr->SPI_Config.SPI_SoftwareSlaveManagement << 9);
+
+//	temp_reg |= (1 << 6);
+
+	SPI_Handle_ptr->SPIx_ptr->CR1 |= temp_reg;
+//	SPI_Handle_ptr->SPIx_ptr->CR1 |= (1 << 6);
 }
 
 /*******************************************************************************
@@ -176,7 +175,7 @@ void SPI_SendData(SPI_RegDef_t *SPIx_ptr,
 		if (Tx_buffer_empty)
 		{
 			// check data frame format
-			uint8_t DFF = (SPIx_ptr->CR1 & (1 << SPI_CR1_DFF));
+			uint8_t DFF = (SPIx_ptr->CR1 & (1 << SPI_CR1_DFF)) >> SPI_CR1_DFF;
 
 			if (DFF == SPI_DFF_8BITS)
 			{
@@ -295,6 +294,49 @@ void SPI_IRQHandling(SPI_Handle_t *SPI_Handle_ptr)
 
 // other peripheral control functions
 
+/*******************************************************************************
+ * @fn 			- GPIO Peripheral Clock Control
+ *
+ * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ *
+ * @param		- base address of GPIO port
+ * @param 		- ENABLE or DISABLE macro
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
+void SPI_PeripheralControl(SPI_RegDef_t *SPIx_ptr, uint8_t en) {
+	if (en) {
+		SPIx_ptr->CR1 |= (1 << SPI_CR1_SPE);
+	}
+	else {
+		SPIx_ptr->CR1 &= ~(1 << SPI_CR1_SPE);
+	}
+}
+
+/*******************************************************************************
+ * @fn 			- GPIO Peripheral Clock Control
+ *
+ * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ *
+ * @param		- base address of GPIO port
+ * @param 		- ENABLE or DISABLE macro
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
+void SPI_SSIConfig(SPI_RegDef_t *SPIx_ptr, uint8_t en) {
+	if (en) {
+		SPIx_ptr->CR1 |= (1 << SPI_CR1_SSI);
+	}
+	else {
+		SPIx_ptr->CR1 &= ~(1 << SPI_CR1_SSI);
+	}
+}
 
 
 
