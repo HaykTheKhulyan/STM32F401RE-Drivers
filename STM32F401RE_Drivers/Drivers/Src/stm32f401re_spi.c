@@ -7,6 +7,19 @@
 
 #include "stm32f401re_spi.h"
 
+/*******************************************************************************
+ * @fn 			- SPI Get Flag Status
+ *
+ * @brief		- returns the status of an SPIx status flag
+ *
+ * @param		- base address of SPIx peripheral
+ * @param 		- the bit position of the flag in the SPI status register
+ *
+ * @return		- 0 if flag is not set, 1 if flag is set
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *SPIx_ptr, uint32_t flag)
 {
 	if (SPIx_ptr->SR & flag) {
@@ -54,9 +67,9 @@ void SPI_PCLK_Control(SPI_RegDef_t *SPIx_ptr,
 /*******************************************************************************
  * @fn 			- SPI Initialize
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Initialize the given SPI peripheral
  *
- * @param		- pointer to SPI Handle struct
+ * @param		- SPI handler structure
  *
  * @return		- none
  *
@@ -108,10 +121,7 @@ void SPI_Init(SPI_Handle_t *SPI_Handle_ptr)
 	// SPI_SoftwareSlaveManagement config
 	temp_reg |= (SPI_Handle_ptr->SPI_Config.SPI_SoftwareSlaveManagement << 9);
 
-//	temp_reg |= (1 << 6);
-
 	SPI_Handle_ptr->SPIx_ptr->CR1 |= temp_reg;
-//	SPI_Handle_ptr->SPIx_ptr->CR1 |= (1 << 6);
 }
 
 /*******************************************************************************
@@ -215,16 +225,27 @@ void SPI_SendData(SPI_RegDef_t *SPIx_ptr,
 }
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * TODO
+ * TODO
+ * TODO
+ * TODO
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @fn 			- SPI Send Data
  *
- * @param		- base address of SPI device
- * @param 		- ENABLE or DISABLE macro
+ * @brief		- Send data along the SPI peripheral
+ *
+ * @param		- base address of SPI peripheral
+ * @param 		- pointer to data to send
+ * @param		- length of data to send (in bytes)
  *
  * @return		- none
  *
- * @note		- none
+ * @note		- This is a blocking call
+ *
+ * TODO
+ * TODO
+ * TODO
+ * TODO
  *
  ******************************************************************************/
 void SPI_ReceiveData(SPI_RegDef_t *SPIx_ptr,
@@ -237,11 +258,12 @@ void SPI_ReceiveData(SPI_RegDef_t *SPIx_ptr,
 // IRQ configuration and ISR handling
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPIx interrupt config
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Sets the proper interrupt register values in the ARM Cortex M4
+ * 				  processor
  *
- * @param		- base address of GPIO port
+ * @param		- The IRQ number we wish to configure
  * @param 		- ENABLE or DISABLE macro
  *
  * @return		- none
@@ -256,12 +278,13 @@ void SPI_IRQInterruptConfig(uint8_t IRQNumber,
 }
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPIx interrupt priority config
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Sets the proper priority register values in the ARM Cortex M4
+ * 				  processor
  *
- * @param		- base address of GPIO port
- * @param 		- ENABLE or DISABLE macro
+ * @param		- The IRQ number we wish to configure
+ * @param 		- The priority of the interrupt
  *
  * @return		- none
  *
@@ -275,12 +298,12 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber,
 }
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPIx interrupt request handling
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Handles the SPIx interrupt request by
+ * 				  clearing EXTI PR register
  *
- * @param		- base address of GPIO port
- * @param 		- ENABLE or DISABLE macro
+ * @param		- pin number of the interrupt we want to clear
  *
  * @return		- none
  *
@@ -295,11 +318,11 @@ void SPI_IRQHandling(SPI_Handle_t *SPI_Handle_ptr)
 // other peripheral control functions
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPIx Peripheral Control
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Enable or disable the given SPIx peripheral
  *
- * @param		- base address of GPIO port
+ * @param		- base address of SPIx peripheral
  * @param 		- ENABLE or DISABLE macro
  *
  * @return		- none
@@ -317,16 +340,18 @@ void SPI_PeripheralControl(SPI_RegDef_t *SPIx_ptr, uint8_t en) {
 }
 
 /*******************************************************************************
- * @fn 			- GPIO Peripheral Clock Control
+ * @fn 			- SPIx Internal Slave Select Control
  *
- * @brief		- Enable or disable the peripheral clock for the given GPIO port
+ * @brief		- Enable or disable the given SPIx peripheral's internal slave
+ * 				  select
  *
- * @param		- base address of GPIO port
+ * @param		- base address of SPIx peripheral
  * @param 		- ENABLE or DISABLE macro
  *
  * @return		- none
  *
- * @note		- none
+ * @note		- this selection only has an effect when the SPIx peripheral's
+ * 				  software slave management is enabled
  *
  ******************************************************************************/
 void SPI_SSIConfig(SPI_RegDef_t *SPIx_ptr, uint8_t en) {
