@@ -1,0 +1,10 @@
+/.metadata/
+/STM32F401RE_Drivers/.cproject
+/STM32F401RE_Drivers/.project
+/STM32F401RE_Drivers/.settings/
+/STM32F401RE_Drivers/Debug/
+/STM32F401RE_Drivers/STM32F401RETX_FLASH.ld
+/STM32F401RE_Drivers/STM32F401RETX_RAM.ld
+/STM32F401RE_Drivers/STM32F401RE_Drivers Debug.launch
+/STM32F401RE_Drivers/Src/
+/STM32F401RE_Drivers/Startup/
