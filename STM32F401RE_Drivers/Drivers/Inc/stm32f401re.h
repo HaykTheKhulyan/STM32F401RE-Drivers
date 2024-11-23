@@ -132,7 +132,7 @@
 #define USART1_BASE_ADDR			(APB2_PERIPHERAL_BASE_ADDR + 0x1000)
 #define USART6_BASE_ADDR			(APB2_PERIPHERAL_BASE_ADDR + 0x1400)
 
-#define ADC1_BASE_ADDR				(APB2_PERIPHERAL_BASE_ADDR + 0x2000)
+#define ADC_BASE_ADDR				(APB2_PERIPHERAL_BASE_ADDR + 0x2000)
 
 #define SDIO_BASE_ADDR				(APB2_PERIPHERAL_BASE_ADDR + 0x2C00)
 
@@ -312,7 +312,7 @@ typedef struct {
 #define SPI3   ((SPI_RegDef_t*) SPI3_BASE_ADDR)
 #define SPI4   ((SPI_RegDef_t*) SPI4_BASE_ADDR)
 
-#define ADC1   ((ADC_RegDef_t*) ADC1_BASE_ADDR))
+#define ADC    ((ADC_RegDef_t*) ADC_BASE_ADDR))
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
