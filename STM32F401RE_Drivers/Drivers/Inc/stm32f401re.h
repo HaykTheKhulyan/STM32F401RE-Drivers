@@ -376,6 +376,28 @@ typedef struct {
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
+ *						   ADC Register Bit Position Definitions
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+// ADC status register
+#define ADC_SR_EOC			1		// regular channel end of conversion
+#define ADC_SR_STRT			4		// regular channel start flag
+
+// ADC control register 1
+#define ADC_CR1_EOCIE		5		// end of conversion interrupt
+#define ADC_CR1_RES			24		// resolution
+
+// ADC control register 2
+#define ADC_CR2_ADON		0		// ADC on
+#define ADC_CR2_CONT		1		// continuous conversion
+#define ADC_CR2_SWSTART		30		// conversion start
+
+// ADC common control register
+#define ADC_CCR_ADCPRE		16		// ADC prescaler
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
  *						Clock Enable Macros for Peripherals
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
