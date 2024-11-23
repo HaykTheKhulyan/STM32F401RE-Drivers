@@ -5,6 +5,8 @@
  *      Author: Hayk Khulyan
  */
 
+#include "stm32f401re_adc.h"
+
 // ADC powered on by setting the ADON bit in the ADC_CR2 register
 // conversion starts when either the SWSTART or JSWSTART bit is set
 // select regular channels in the ADC_SQRx register
@@ -36,7 +38,8 @@
  ******************************************************************************/
 void ADC_PCLK_Control(ADC_RegDef_t *ADC_ptr,
 					  uint8_t en) {
-
+	if (en) ADC_PCLK_EN();
+	else 	ADC_PCLK_DI();
 }
 
 /*******************************************************************************
@@ -52,6 +55,48 @@ void ADC_PCLK_Control(ADC_RegDef_t *ADC_ptr,
  *
  ******************************************************************************/
 void ADC_Init(ADC_Handle_t *ADC_Handle_ptr) {
+	/*
+	 * typedef struct
+		{
+			uint8_t ADC_ConversionMode;
+			uint8_t ADC_Resolution;
+			uint8_t ADC_Prescaler;
+
+		} ADC_Config_t;
+	 */
+
+	// enable the clock for the ADC peripheral
+	ADC_PCLK_Control(ADC_Handle_ptr->ADC_ptr, ENABLE);
+
+
+	uint32_t CR2_temp_reg = 0;
+
+	// configure continuous bit
+	CR2_temp_reg |= (ADC_Handle_ptr->
+					 ADC_Config.
+					 ADC_ConversionMode << ADC_CR2_CONT);
+
+	ADC_Handle_ptr->ADC_ptr->CR2 |= CR2_temp_reg;
+
+
+	uint32_t CR1_temp_reg = 0;
+
+	// configure resolution bits
+	CR1_temp_reg |= (ADC_Handle_ptr->
+					 ADC_Config.
+					 ADC_Resolution << ADC_CR1_RES);
+
+	ADC_Handle_ptr->ADC_ptr->CR1 |= CR1_temp_reg;
+
+
+	uint32_t CCR_temp_reg = 0;
+
+	// configure prescaler
+	CCR_temp_reg |= (ADC_Handle_ptr->
+					 ADC_Config.
+					 ADC_Prescaler << ADC_CCR_ADCPRE);
+
+	ADC_Handle_ptr->ADC_ptr->CCR |= CCR_temp_reg;
 
 }
 
@@ -68,7 +113,8 @@ void ADC_Init(ADC_Handle_t *ADC_Handle_ptr) {
  *
  ******************************************************************************/
 void ADC_DeInit(ADC_RegDef_t *ADC_ptr) {
-
+	RCC->APB2RSTR |=  (1 << 8);
+	RCC->APB2RSTR &= ~(1 << 8);
 }
 
 /*******************************************************************************
@@ -148,7 +194,7 @@ void ADC_IRQHandling(ADC_Handle_t *ADC_Handle_ptr) {
 /*******************************************************************************
  * @fn 			- ADC Peripheral Control
  *
- * @brief		- Enable or disable the ADC
+ * @brief		- Enable or disable the ADC and start conversion
  *
  * @param		- base address of ADC peripheral
  * @param 		- ENABLE or DISABLE macro
@@ -159,7 +205,9 @@ void ADC_IRQHandling(ADC_Handle_t *ADC_Handle_ptr) {
  *
  ******************************************************************************/
 void ADC_PeripheralControl(ADC_RegDef_t *ADC_ptr, uint8_t en) {
-
+	// ADON bit and SWSTART bit
+	ADC_ptr->CR2 |= (1 << ADC_CR2_ADON);
+	ADC_ptr->CR2 |= (1 << ADC_CR2_SWSTART);
 }
 
 

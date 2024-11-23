@@ -50,6 +50,7 @@ void GPIO_PCLK_Control(GPIO_RegDef_t *GPIOx_ptr,
 
 /*******************************************************************************
  * @fn 			- GPIO Initialize
+ *
  * @brief		- Initialize the given GPIO port
  *
  * @param		- GPIO handler structure
