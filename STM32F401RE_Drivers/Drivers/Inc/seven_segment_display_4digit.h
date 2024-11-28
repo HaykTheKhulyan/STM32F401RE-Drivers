@@ -16,6 +16,11 @@
 #include <stdint.h>
 #include "stm32f401re.h"
 
+#define DIGIT_1 12
+#define DIGIT_2 9
+#define DIGIT_3 8
+#define DIGIT_4 6
+
 // this config struct will be configured by the user to hold the GPIO ports and
 // pins corresponding to each of the segments and control pins on the display
 typedef struct
@@ -50,6 +55,8 @@ typedef struct
 // initializes static global variables with ODR addresses and pin ports
 void init_pins(FourDigitDisplay_Config_t *FourDigitDisplay_Config);
 
+// displays a 4 digit number
+void display_number(int16_t value);
 // displays a given value (0-9) at the given digit spot (1-4)
 void display_digit(int8_t value, uint8_t digit);
 // displays the colon
