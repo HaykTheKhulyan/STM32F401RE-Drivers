@@ -24,7 +24,7 @@ static FourDigitDisplay_Config_t GPIO_PortsAndPins;
  *
  * @brief		- Initializes the GPIO pins defined in the config struct
  *
- * @param		- config struct definining which GPIO pins will be used for
+ * @param		- config struct defining which GPIO pins will be used for
  * 				  the display
  *
  * @return		- none
@@ -132,6 +132,20 @@ void init_pins(FourDigitDisplay_Config_t *FourDigitDisplay_Config) {
 	GPIO_Init(&GPIO);
 }
 
+/*******************************************************************************
+ * @fn 			- Display number
+ *
+ * @brief		- Displays the given 4 digit number
+ *
+ * @param		- the 4 digit number to be displayed
+ *
+ * @return		- none
+ *
+ * @note		- maximum value that can be display is 9999
+ * 				- if the number does not contain a value at a certain decimal
+ * 			      place, that display digit will be left blank
+ *
+ ******************************************************************************/
 void display_number(int16_t value) {
 	if (value > 999) {
 		display_digit(value / 1000, DIGIT_1);
@@ -150,6 +164,19 @@ void display_number(int16_t value) {
 	}
 }
 
+/*******************************************************************************
+ * @fn 			- Display digit
+ *
+ * @brief		- Displays a digit at a chosen digit position
+ *
+ * @param		- the digit value (0-9) to be displayed
+ * 				- the digit position (1-4) to display the digit at
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
 void display_digit(int8_t value, uint8_t digit) {
 	// set all segment pins to 0
 	// set all digit pins to high
@@ -249,9 +276,23 @@ void display_digit(int8_t value, uint8_t digit) {
 		break;
 	}
 
+//	clear_segments();
+
 	clear_digits();
 }
 
+/*******************************************************************************
+ * @fn 			- Display colon
+ *
+ * @brief		- Displays the colon
+ *
+ * @param		- none
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
 void display_colon() {
 	clear_segments();
 
@@ -265,6 +306,18 @@ void display_colon() {
 	clear_digits();
 }
 
+/*******************************************************************************
+ * @fn 			- Clear segments
+ *
+ * @brief		- Sets all segments to blank
+ *
+ * @param		- none
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
 void clear_segments() {
 	GPIO_WriteToOutputPin(GPIO_PortsAndPins.GPIOPort_SegmentA,
 						  GPIO_PortsAndPins.GPIOPin_SegmentA,
@@ -292,6 +345,18 @@ void clear_segments() {
 						  0);
 }
 
+/*******************************************************************************
+ * @fn 			- Clear digits
+ *
+ * @brief		- De-selects all 4 digits
+ *
+ * @param		- none
+ *
+ * @return		- none
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
 void clear_digits() {
 	GPIO_WriteToOutputPin(GPIO_PortsAndPins.GPIOPort_Digit1,
 						  GPIO_PortsAndPins.GPIOPin_Digit1,
@@ -307,6 +372,19 @@ void clear_digits() {
 						  1);
 }
 
+/*******************************************************************************
+ * @fn 			- Activate segment
+ *
+ * @brief		- activates a chosen segment on the display
+ *
+ * @param		- enum for the chosen segment
+ *
+ * @return		- none
+ *
+ * @note		- an active segment will only be lit at a digit position that
+ * 				  is also active. otherwise, activating a segment has no effect
+ *
+ ******************************************************************************/
 void activate_segment(uint8_t segment) {
 //	*GPIO_ODR[segment] |= (1 << GPIO_pin_ports[segment]);
 	switch (segment) {
@@ -315,10 +393,9 @@ void activate_segment(uint8_t segment) {
 							  GPIO_PortsAndPins.GPIOPin_SegmentA,
 							  1);
 
-		// this for-loop adds a small delay, ensuring that the LED remains on for
-		// long enough to appear bright
-		// otherwise, the latter segments get turned off so
-		// quickly that they appear more dim
+		// this for-loop adds a small delay, ensuring that the LED remains on
+		// for long enough to appear bright otherwise, the latter segments get
+		// turned off so quickly that they appear more dim
 		for (uint64_t i = 0; i < 100; i++);
 
 		GPIO_WriteToOutputPin(GPIO_PortsAndPins.GPIOPort_SegmentA,
@@ -413,6 +490,20 @@ void activate_segment(uint8_t segment) {
 	}
 }
 
+/*******************************************************************************
+ * @fn 			- Activate digit
+ *
+ * @brief		- activates the chosen digit
+ *
+ * @param		- enum for the chosen digit
+ *
+ * @return		- none
+ *
+ * @note		- this function enables a digit to be controlled by any active
+ * 				  segments. a digit must be activated before the corresponding
+ * 				  LED segments at that digit position can be lit
+ *
+ ******************************************************************************/
 void activate_digit(uint8_t digit) {
 	switch (digit) {
 		case DIGIT_1:
