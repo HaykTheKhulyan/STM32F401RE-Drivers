@@ -279,7 +279,7 @@ typedef struct {
 	volatile uint32_t JOFR[4];
 	volatile uint32_t HTR;
 	volatile uint32_t LTR;
-	volatile uint32_t SQR1[3];
+	volatile uint32_t SQR[3];
 	volatile uint32_t JSQR;
 	volatile uint32_t JDR[4];
 	volatile uint32_t DR;
@@ -312,7 +312,7 @@ typedef struct {
 #define SPI3   ((SPI_RegDef_t*) SPI3_BASE_ADDR)
 #define SPI4   ((SPI_RegDef_t*) SPI4_BASE_ADDR)
 
-#define ADC    ((ADC_RegDef_t*) ADC_BASE_ADDR))
+#define ADC    ((ADC_RegDef_t*) ADC_BASE_ADDR)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -395,6 +395,12 @@ typedef struct {
 
 // ADC common control register
 #define ADC_CCR_ADCPRE		16		// ADC prescaler
+
+// ADC regular sequence register 1
+#define ADC_SQR1_L			20
+
+// ADC regular sequence register 3
+#define ADC_SQR3_SQ1		0
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
