@@ -23,6 +23,27 @@
 */
 
 /*******************************************************************************
+ * @fn 			- ADC Get Flag Status
+ *
+ * @brief		- returns the status of an ADC status flag
+ *
+ * @param		- base address of ADC peripheral
+ * @param 		- the bit position of the flag in the ADC status register
+ *
+ * @return		- 0 if flag is not set, 1 if flag is set
+ *
+ * @note		- none
+ *
+ ******************************************************************************/
+uint8_t ADC_GetFlagStatus(ADC_RegDef_t *ADC_ptr, uint32_t flag)
+{
+	if (ADC_ptr->SR & flag) {
+		return FLAG_SET;
+	}
+	return FLAG_RESET;
+}
+
+/*******************************************************************************
  * @fn 			- ADC Peripheral Clock Control
  *
  * @brief		- Enable or disable the peripheral clock for the
@@ -98,6 +119,26 @@ void ADC_Init(ADC_Handle_t *ADC_Handle_ptr) {
 
 	ADC_Handle_ptr->ADC_ptr->CCR |= CCR_temp_reg;
 
+	// configure regular channel sequence length
+//	uint32_t SQR1_temp_reg = 0;
+
+//	SQR1_temp_reg |= (ADC_Handle_ptr->
+//					  ADC_Config.
+//					  ADC_RegularChannelSequenceLength << ADC_SQR1_L);
+
+	// for now, hard code channel 0 to be first in the sequence
+	// later, fix this driver so the user can select a custom regular sequence
+	ADC_Handle_ptr->ADC_ptr->SQR[0] |= (1 << ADC_SQR1_L);
+
+	// configure 1st channel in regular sequence
+//	uint32_t SQR3_temp_reg = 0;
+//
+//	SQR3_temp_reg |= (0 << ADC_SQR3_SQ1);
+
+	ADC_Handle_ptr->ADC_ptr->SQR[2] |= (0 << ADC_SQR3_SQ1);
+
+
+
 }
 
 /*******************************************************************************
@@ -133,7 +174,11 @@ void ADC_DeInit(ADC_RegDef_t *ADC_ptr) {
  *
  ******************************************************************************/
 uint16_t ADC_Read(ADC_RegDef_t *ADC_ptr) {
+	while (ADC_GetFlagStatus(ADC_ptr, ADC_SR_EOC));
 
+	uint16_t read_value = ADC_ptr->DR;
+
+	return read_value;
 }
 
 /*******************************************************************************

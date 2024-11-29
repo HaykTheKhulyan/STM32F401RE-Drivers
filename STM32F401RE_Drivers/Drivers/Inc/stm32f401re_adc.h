@@ -32,6 +32,11 @@
 #define ADC_CLK_DIV6	2
 #define ADC_CLK_DIV8	3
 
+// ADC Input Channels
+#define ADCIN_0		0
+#define ADCIN_1		1
+#define ADCIN_2		2
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  *						           ADC Structs
@@ -44,6 +49,7 @@ typedef struct
 	uint8_t ADC_ConversionMode;
 	uint8_t ADC_Resolution;
 	uint8_t ADC_Prescaler;
+//	uint8_t ADC_RegularChannelSequenceLength;
 
 } ADC_Config_t;
 
